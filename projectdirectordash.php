@@ -4,18 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Project Director Dashboard</title>
-  
-
+   
 <?php
 // Include database connection
 include("includes/config.php");
-
-
-
-
-
-
-
 
 // Query to get the total number of beneficiaries
 $queryTotal = "SELECT COUNT(*) AS total FROM personal_info";
@@ -23,17 +15,11 @@ $resultTotal = mysqli_query($conn, $queryTotal);
 $rowTotal = mysqli_fetch_assoc($resultTotal);
 $totalBeneficiaries = $rowTotal['total'];
 
-
-
-
 // Query to get the number of attended beneficiaries (Date_of_Screening is not NULL)
 $queryAttended = "SELECT COUNT(*) AS attended FROM personal_info WHERE Date_of_Screening IS NOT NULL";
 $resultAttended = mysqli_query($conn, $queryAttended);
 $rowAttended = mysqli_fetch_assoc($resultAttended);
 $attendedBeneficiaries = $rowAttended['attended'];
-
-
-
 
 // Query to get the number of failed beneficiaries (Date_of_Screening is NULL)
 $queryFailed = "SELECT COUNT(*) AS failed FROM personal_info WHERE Date_of_Screening IS NULL";
@@ -173,26 +159,34 @@ $failedBeneficiaries = $rowFailed['failed'];
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
+      gap: 20px; /* Add gap between cards */
     }
 
     .card {
-      background-color: #fff;
+      background-color: #6fb854;
       padding: 20px;
-      width: 30%;
+      width: calc(33.333% - 20px); /* Adjust width to fit three cards in a row with gap */
       margin-bottom: 20px;
       border-radius: 6px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s; /* Add transition for hover effect */
+    }
+
+    .card:hover {
+      transform: translateY(-10px); /* Lift the card on hover */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhance shadow on hover */
     }
 
     .card h3 {
       margin: 0;
       font-size: 28px;
+      color: white;
     }
 
     .card p {
       font-size: 16px;
-      color: #777;
+      color: white;
     }
 
     .table {
@@ -268,7 +262,7 @@ $failedBeneficiaries = $rowFailed['failed'];
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <label style="font-weight; bolder; color:lime; font-size:30px;">Project Director Dashboard</label>
+      <label style="font-weight: bolder; color:black; font-size:30px;">Project Director Dashboard</label>
       <div class="user-profile" id="userProfile">
         <img src="images/Admin.png" alt="User Profile">
         <span>Project Director</span>
