@@ -2,6 +2,26 @@
 // Include the database connection (config.php)
 include('includes/config.php');
 
+// Initialize search term
+$searchTerm = "";
+
+// Check if a search term is provided and sanitize it
+if (isset($_GET['search'])) {
+    $searchTerm = mysqli_real_escape_string($conn, $_GET['search']);
+}
+
+// Query to fetch beneficiaries who didn't attend screening with search functionality
+$sql = "SELECT * FROM personal_info WHERE Date_of_Screening IS NULL";
+
+// If a search term is provided, add it to the query
+if (!empty($searchTerm)) {
+    $sql .= " AND (FName LIKE '%$searchTerm%' OR LName LIKE '%$searchTerm%' OR Local_BeneficiaryID LIKE '%$searchTerm%')";
+}
+
+$result = $conn->query($sql);
+
+// Check if the query returned any results
+$beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_ASSOC) : [];
 // Fetch Beneficiary Data
 $sql = "SELECT 
             countrycode, 
@@ -39,11 +59,13 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
+      height: 100%;
+      overflow: hidden; /* Prevent body from scrolling */
     }
 
     .container {
       display: flex;
-      min-height: 100vh;
+      height: 100vh;
     }
 
     /* Sidebar styles */
@@ -84,6 +106,9 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       flex-grow: 1;
       background-color: #f4f7fa;
       padding: 20px;
+      overflow-y: auto;
+      margin-top: 60px; /* Adjust for fixed header */
+      margin-bottom: 50px; /* Adjust for fixed footer */
     }
 
     /* Header styles */
@@ -160,6 +185,16 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
     .table td {
       border-top: 1px solid #ddd;
     }
+     /* Back Button */
+     .back-btn {
+      padding: 8px 16px;
+      background-color: #2f3b52;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
 
     /* Print button styles */
     .print-btn {
@@ -174,6 +209,18 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
 
     .print-btn:hover {
       background-color: #45a049;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      background-color: #3a87ad;
+      color: white;
+      padding: 10px 0;
+      width: calc(100% - 250px); /* Adjust for sidebar width */
+      position: fixed;
+      bottom: 0;
+      left: 250px; /* Adjust for sidebar width */
     }
   </style>
 
@@ -211,7 +258,10 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
     <div class="main-content">
       <!-- Header -->
       <div class="header">
-        <input type="text" class="search-bar" placeholder="Search...">
+      <form method="GET" style="display: flex; align-items: center;">
+          <input type="text" name="search" class="search-bar" placeholder="Search..." value="<?= htmlspecialchars($searchTerm) ?>">
+          <button type="submit" class="search-btn">Search</button>
+        </form>
         <div class="user-profile">
           <img src="images/admin.png" alt="User Profile">
         </div>
@@ -220,6 +270,9 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       <!-- Beneficiaries Section -->
       <div class="section" id="report-section">
         <h2>General Report</h2>
+        <?php if (!empty($searchTerm)): ?>
+          <a href="viewgeneralreport.php"><button class="back-btn">Back to Full List</button></a>
+        <?php endif; ?>
         <table class="table">
           <thead>
             <tr>
@@ -276,8 +329,12 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       <!-- Print Button -->
       <button class="print-btn" onclick="printSection('report-section')">Print Report</button>
     </div>
-      <?php 
-      include("includes/footer.php"); 
-      ?>
-  </body>
-  </html>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    &copy; 2025 Healthy Project. All rights reserved.
+  </div>
+
+</body>
+</html>
