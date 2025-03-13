@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+    <script src="https://kit.fontawesome.com/d3ec5829fc.js" crossorigin="anonymous"></script>
+    <title>Log in</title>
+</head>
+<body>
+    <div class="background"></div> <!-- Background overlay -->
+    <div class="form-container"> <!-- Form container -->
+        <form id="loginform">
+            <div class="text">
+                <h2>Login Form</h2>
+                <br>
+                
+            </div>
+            <br><br>
+            <div class="entryarea">
+                <input type="text" id="username" required>
+                <div class="labelline">Enter Username</div>
+                <i class="fa-regular fa-user" id="fa-user"></i>
+            </div>
+            <br><br>
+            <div class="entryarea">
+                <input type="password" id="password" required>
+                <div class="labelline">Enter Password</div>
+                <i class="fa-regular fa-eye" id="togglePassword"></i> <!-- Password visibility icon -->
+            </div>
+            <div class="remember-me">
+                <input type="checkbox">
+                <label for="checkbox">Remember me</label>
+            </div>
+            <button type="submit" id="loginButton">LOGIN</button>
+            <div class="forget">
+                <a href="forgotpwd.html">Forgot Password</a>
+            </div>
+        </form>
+        <script>
+            document.getElementById('loginButton').addEventListener('click', function(event) {
+                // Prevent form submission
+                event.preventDefault();
+        
+                // Predefined valid login details
+                const validUsername = 'paul';
+                const validPassword = '1234';
+        
+                // Get input values
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+        
+                // Check if login details are valid
+                if (username === validUsername && password === validPassword) {
+                    // Redirect to homepage
+                    console.log('Redirecting to homepage...');
+                    window.location.href = 'healthform1.html'; // This will redirect the user
+                } else {
+                    alert('Invalid username or password. Please try again.');
+                }
+            });
+            // Password visibility toggle
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+
+            togglePassword.addEventListener('click', function() {
+                // Toggle the type attribute of the password input
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+
+                // Toggle the icon class
+                this.classList.toggle('fa-eye-slash');
+            });
+        </script>
+        
+           
+    </div>
+</body>
+</html>
