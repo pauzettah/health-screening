@@ -25,32 +25,36 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
 
 $conn->close(); // Close the connection
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Director Dashboard</title>
+  <title>Beneficiaries Who Didn't Attend Screening</title>
   <style>
     /* Global Styles */
     body, html {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
+      height: 100%;
+      overflow: hidden; /* Prevent body from scrolling */
     }
 
     .container {
       display: flex;
-      min-height: 100vh;
+      height: 100vh;
     }
 
     /* Sidebar Styles */
     .sidebar {
       width: 250px;
-      background-color:  #3a87ad;
+      background-color: #3a87ad;
       color: white;
       padding-top: 20px;
-      height: 100%;
+      position: static;
+      height: 100vh;
     }
 
     .sidebar a {
@@ -80,6 +84,8 @@ $conn->close(); // Close the connection
       flex-grow: 1;
       background-color: #f4f7fa;
       padding: 20px;
+      overflow-y: auto;
+      margin-top: 30px;
     }
 
     /* Header */
@@ -90,6 +96,11 @@ $conn->close(); // Close the connection
       background-color: #fff;
       padding: 10px 20px;
       border-bottom: 1px solid #ddd;
+      position: fixed;
+      top: 0;
+      left: 250px; /* Adjust for sidebar width */
+      right: 0;
+      z-index: 100;
     }
 
     .header .search-bar {
@@ -125,9 +136,7 @@ $conn->close(); // Close the connection
 
     /* Section Styling */
     .section {
-      margin-top: 30px;
-      max-height: 60vh;
-      overflow-y: auto; /* Makes the table scrollable */
+      margin-top: 20px; /* Adjust for fixed header */
     }
 
     .section h2 {
@@ -140,6 +149,10 @@ $conn->close(); // Close the connection
       width: 100%;
       margin-top: 20px;
       border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .table th, .table td {
@@ -149,7 +162,12 @@ $conn->close(); // Close the connection
     }
 
     .table th {
-      background-color: #f5f5f5;
+      background-color: #3a87ad;
+      color: white;
+    }
+
+    .table tr:nth-child(even) {
+      background-color: #f9f9f9;
     }
 
     .table tr:hover {
@@ -159,12 +177,13 @@ $conn->close(); // Close the connection
     /* Footer */
     .footer {
       text-align: center;
-      background-color: #2f3b52;
+      background-color: #3a87ad;
       color: white;
       padding: 10px 0;
+      width: calc(100% - 250px); /* Adjust for sidebar width */
       position: fixed;
-      width: 100%;
       bottom: 0;
+      left: 250px; /* Adjust for sidebar width */
     }
 
     /* Back Button */
@@ -269,8 +288,8 @@ $conn->close(); // Close the connection
   </div>
 
   <!-- Footer -->
-  <div>
-    <?php include("includes/footer.php"); ?>
+  <div class="footer">
+    &copy; 2025 Healthy Project. All rights reserved.
   </div>
 
 </body>

@@ -1,28 +1,39 @@
-<?php
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beneficiaries (Attended)</title>
+  <?php
 // Include the database connection (config.php)
 include('includes/config.php');
 
+
 // Initialize the search term
 $searchTerm = "";
+
 
 // Check if a search term is provided and sanitize it
 if (isset($_GET['search'])) {
     $searchTerm = mysqli_real_escape_string($conn, $_GET['search']);
 }
 
+
 // Fetch Beneficiary Data with search functionality
 $sql = "SELECT * FROM personal_info WHERE FName LIKE '%$searchTerm%' OR LName LIKE '%$searchTerm%' OR Local_BeneficiaryID LIKE '%$searchTerm%'";
 $result = $conn->query($sql);
 $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
 
 // Export to CSV Functionality
 if (isset($_POST['export_csv'])) {
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment;filename=beneficiaries.csv');
 
+
     $output = fopen("php://output", "w");
     fputcsv($output, ['Beneficiary ID', 'Full Name', 'Birthdate', 'Gender', 'Screening Date', 'Status']);
-    
+   
     foreach ($beneficiaries as $beneficiary) {
         fputcsv($output, [
             $beneficiary['Local_BeneficiaryID'],
@@ -37,23 +48,20 @@ if (isset($_POST['export_csv'])) {
     exit;
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Director Dashboard</title>
+
   <style>
     /* Global Styles */
     body, html {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
+      height: 100%;
+      overflow: hidden; /* Prevent body from scrolling */
     }
 
     .container {
       display: flex;
-      min-height: 100vh;
+      height: 100vh;
     }
 
     /* Sidebar Styles */
@@ -62,7 +70,10 @@ if (isset($_POST['export_csv'])) {
       background-color: #3a87ad;
       color: white;
       padding-top: 20px;
-      height: 100%;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      overflow-y: auto;
     }
 
     .sidebar a {
@@ -87,11 +98,13 @@ if (isset($_POST['export_csv'])) {
       width: 50%;
     }
 
-    /* Main Dashboard Styles */
+    /* Main Content Styles */
     .main-content {
       flex-grow: 1;
       background-color: #f4f7fa;
       padding: 20px;
+      margin-left: 250px; /* Adjust for sidebar width */
+      overflow-y: auto;
     }
 
     /* Header */
@@ -102,6 +115,11 @@ if (isset($_POST['export_csv'])) {
       background-color: #fff;
       padding: 10px 20px;
       border-bottom: 1px solid #ddd;
+      position: fixed;
+      top: 0;
+      left: 250px; /* Adjust for sidebar width */
+      right: 0;
+      z-index: 100;
     }
 
     .header .search-bar {
@@ -138,7 +156,7 @@ if (isset($_POST['export_csv'])) {
 
     /* Section Styling */
     .section {
-      margin-top: 30px;
+      margin-top: 60px; /* Adjust for fixed header */
     }
 
     .section h2 {
@@ -151,6 +169,10 @@ if (isset($_POST['export_csv'])) {
       width: 100%;
       margin-top: 20px;
       border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .table th, .table td {
@@ -160,7 +182,12 @@ if (isset($_POST['export_csv'])) {
     }
 
     .table th {
-      background-color: #f5f5f5;
+      background-color: #3a87ad;
+      color: white;
+    }
+
+    .table tr:nth-child(even) {
+      background-color: #f9f9f9;
     }
 
     .table tr:hover {
@@ -181,7 +208,7 @@ if (isset($_POST['export_csv'])) {
 
     /* Back Button */
     .back-btn {
-      background-color:lime;
+      background-color: #007bff;
       color: white;
       padding: 10px 15px;
       border: none;
@@ -192,20 +219,19 @@ if (isset($_POST['export_csv'])) {
     }
 
     .back-btn:hover {
-      background-color: #5a6268;
+      background-color: #0056b3;
     }
-
-
 
     /* Footer */
     .footer {
       text-align: center;
-      background-color: #2f3b52;
+      background-color:#3a87ad;
       color: white;
       padding: 10px 0;
       position: fixed;
-      width: 100%;
+      width: calc(100% - 250px); /* Adjust for sidebar width */
       bottom: 0;
+      left: 250px; /* Adjust for sidebar width */
     }
   </style>
 </head>
@@ -232,7 +258,7 @@ if (isset($_POST['export_csv'])) {
     <div class="main-content">
       <!-- Header -->
       <form method="GET" class="filter">
-        <input type="text" name="search" placeholder="Search by name or ID..." style="padding: 8px; width: 300px;" value="<?= htmlspecialchars($searchTerm) ?>">
+        <input type="text" name="search" placeholder="Search by name or ID..." class="search-bar" value="<?= htmlspecialchars($searchTerm) ?>">
         <button type="submit" class="search-btn">Search</button>
       </form>
 
@@ -289,8 +315,8 @@ if (isset($_POST['export_csv'])) {
   </div>
 
   <!-- Footer -->
-  <div>
-    <?php include("includes/footer.php"); ?>
+  <div class="footer">
+    &copy; 2025 Healthy Project. All rights reserved.
   </div>
 
 </body>

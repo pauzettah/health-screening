@@ -10,20 +10,23 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
+      height: 100%;
+      overflow: hidden; /* Prevent body from scrolling */
     }
 
     .container {
       display: flex;
-      min-height: 100vh;
+      height: 100vh;
     }
 
     /* Sidebar Styles */
     .sidebar {
       width: 250px;
-      background-color:#3a87ad;
+      background-color: #3a87ad;
       color: white;
       padding-top: 20px;
-      height: 100%;
+      position: static;
+      height: 100vh;
     }
 
     .sidebar a {
@@ -53,6 +56,7 @@
       flex-grow: 1;
       background-color: #f4f7fa;
       padding: 20px;
+      overflow-y: auto;
     }
 
     /* Header */
@@ -63,19 +67,22 @@
       background-color: #fff;
       padding: 10px 20px;
       border-bottom: 1px solid #ddd;
+      position: fixed;
+      top: 0;
+      left: 250px; /* Adjust for sidebar width */
+      right: 0;
+      z-index: 100;
     }
 
-    .header .search-bar {
-      width: 300px;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+    .header .title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #34495e;
     }
 
     .header .user-profile {
       display: flex;
       align-items: center;
-      margin-left: 1150px;
     }
 
     .header .user-profile img {
@@ -86,7 +93,7 @@
 
     /* Section Styling */
     .section {
-      margin-top: 30px;
+      margin-top: 60px; /* Adjust for fixed header */
     }
 
     .section h2 {
@@ -99,12 +106,13 @@
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
+      gap: 20px; /* Add gap between cards */
     }
 
     .card {
       background-color: #fff;
       padding: 20px;
-      width: 30%;
+      width: calc(33.333% - 20px); /* Adjust width to fit three cards in a row with gap */
       margin-bottom: 20px;
       border-radius: 8px;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -145,38 +153,17 @@
       background-color: #2980b9;
     }
 
-    /* Table Layout for Beneficiaries */
-    .table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-    }
-
-    .table th, .table td {
-      padding: 12px;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
-
-    .table th {
-      background-color: #f5f5f5;
-    }
-
-    .table tr:hover {
-      background-color: #f1f1f1;
-    }
-
     /* Footer */
     .footer {
       text-align: center;
-      background-color: #2f3b52;
+      background-color: #3a87ad;
       color: white;
       padding: 10px 0;
+      width: calc(100% - 250px); /* Adjust for sidebar width */
       position: fixed;
-      width: 100%;
       bottom: 0;
+      left: 250px; /* Adjust for sidebar width */
     }
-
   </style>
 </head>
 <body>
@@ -202,6 +189,7 @@
     <div class="main-content">
       <!-- Header -->
       <div class="header">
+        <div class="title">Project Director Dashboard</div>
         <div class="user-profile">
           <img src="images/admin.png" alt="User Profile">
         </div>
@@ -211,11 +199,6 @@
       <div class="section">
         <h2>Reports</h2>
         <div class="card-container">
-       <!--   <div class="card">
-            <h3>Generate Report</h3>
-            <p>Generate a detailed report for screenings, beneficiaries, and attendance.</p>
-            <a href="generate_report.php"><button>Generate</button></a>
-          </div>-->
           <div class="card">
             <h3>View Past Reports</h3>
             <p>Access historical reports related to the project and screenings.</p>
@@ -233,13 +216,12 @@
           <button onclick="location.href='summary.php'">View Summary</button>
         </div>
       </div>
-
     </div>
   </div>
 
   <!-- Footer -->
-  <div>
-    <?php include("includes/footer.php"); ?>
+  <div class="footer">
+    &copy; 2025 Healthy Project. All rights reserved.
   </div>
 
 </body>
