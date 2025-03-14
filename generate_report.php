@@ -45,15 +45,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #f4f7fa;
             margin: 0;
             padding: 0;
+            height: 100%;
+            overflow: hidden; /* Prevent body from scrolling */
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 80px; /* Adjust the height as needed */
+            background-color: #3a87ad;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .header img {
+            height: 50px; /* Adjust the height of the logo */
+            margin-right: 10px;
+        }
+
+        .header .title {
+            font-size: 18px; /* Adjust the font size as needed */
         }
 
         .container {
             max-width: 600px;
-            margin: 50px auto;
+            margin: 100px auto 50px; /* Adjust margin to account for header and footer */
             background: white;
+            overflow-y: auto;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-height: calc(100vh - 160px); /* Adjust height to account for header and footer */
         }
 
         h1 {
@@ -113,13 +139,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .footer {
             text-align: center;
-            padding: 15px;
             background-color: #3a87ad;
             color: white;
-            font-size: 14px;
+            padding: 10px 0;
+            width: 100%;
             position: fixed;
             bottom: 0;
-            width: 100%;
+            left: 0;
+            height: 50px; /* Adjust the height as needed */
+            line-height: 50px; /* Vertically center the text */
         }
 
         .footer a {
@@ -147,9 +175,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .back-button:hover {
             background-color: #45a049;
         }
+
+        .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 150px;
+        }
     </style>
 </head>
 <body>
+    <div class="header">
+        <img src="images/logo.png" alt="Logo">
+        <div class="title">Healthy Project</div>
+    </div>
 
     <div class="container">
         <a href="prjreport1.php" class="back-button">Back</a> <!-- Back Button -->
@@ -186,8 +224,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="footer">
-        <p>&copy; 2025 Compassion International | <a href="privacy-policy.php">Privacy Policy</a> | <a href="terms-of-service.php">Terms of Service</a></p>
+        &copy; <span id="year"></span> Healthy Project. All rights reserved.
     </div>
 
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
