@@ -2,8 +2,6 @@
 // Include the database configuration
 include('includes/config.php');
 $hide_home = true;
-include("includes/header.php");
-
 
 // Modify the Home link to point to projectdirectordash.php instead of index
 echo '<script>
@@ -26,8 +24,55 @@ $result = $conn->query($sql);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>View Reports</title>
 </head>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fa;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  .view-reports {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px 0 55px 0;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: calc(100vh - 160px); /* Adjust height to fit between header and footer */
+  }
+
+  .header{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: #3a87ad;
+    color: white;
+    text-align: center;
+    text-align: center;
+    height: 45px;
+  }
+
+  .footer {
+    text-align: center;
+    background-color: #3a87ad;
+    color: white;
+    padding: 0;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    margin-bottom: 0;
+    height: auto;
+    line-height: 60px; /* Vertically center the text */
+  }
+</style>
 <body style="font-family: Arial, sans-serif; background-color: #f4f7fa; margin: 0; padding: 20px;">
-  <div style="max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+<div class="header">  <?php include("includes/header.php"); ?>
+
+  <div class="view-reports">
     
     <h1 style="text-align: center; color: #333; padding: 15px; border-bottom: 3px solid #4CAF50;">Past Reports</h1>
     
@@ -68,6 +113,7 @@ $result = $conn->query($sql);
 
   </div>
 
-  <?php include("includes/footer.php"); ?>
+  <div class="footer">© 2025 Health Screening System | All rights reserved
+  </div>
 </body>
 </html>
