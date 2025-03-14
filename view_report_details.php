@@ -1,9 +1,6 @@
 <?php
 // Include necessary files
 include('includes/config.php');
-$hide_home = true;
-include("includes/header.php");
-
 // Get the ReportID from the URL
 $reportID = isset($_GET['ReportID']) ? mysqli_real_escape_string($conn, $_GET['ReportID']) : null;
 
@@ -35,15 +32,44 @@ if ($reportID) {
       background-color: #f4f7fa;
       margin: 0;
       padding: 0;
+      height: 100%;
+      overflow: hidden; /* Prevent body from scrolling */
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 100px; /* Adjust the height as needed */
+      background-color: #3a87ad;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 1000;
+    }
+
+    .header img {
+      height: 30px; /* Adjust the height of the logo */
+      margin-right: 10px;
+    }
+
+    .header .title {
+      font-size: 18px; /* Adjust the font size as needed */
     }
 
     .container {
       max-width: 800px;
-      margin: 50px auto;
+      margin-top: 60px;
       background: white;
+      overflow-y: auto;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      top: 70px; /* Adjust to account for the header height */
+      bottom: 70px; /* Adjust to account for the footer height */
+      max-height: calc(100vh - 140px); /* Adjust to account for header and footer height */
     }
 
     h1 {
@@ -66,7 +92,7 @@ if ($reportID) {
 
     .back-button {
       display: block;
-      width: 150px;
+      width: 130px;
       margin: 20px auto;
       padding: 10px;
       text-align: center;
@@ -80,9 +106,26 @@ if ($reportID) {
     .back-button:hover {
       background: #306f92;
     }
+
+    .footer {
+      text-align: center;
+      background-color: #3a87ad;
+      color: white;
+      padding: 0;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      margin-bottom: 0;
+      height: 50px; /* Adjust the height as needed */
+      line-height: 50px; /* Vertically center the text */
+    }
   </style>
 </head>
 <body>
+  <div class="header">
+    <img src="images/logo.png" alt="Logo">
+    <div class="title">Report Details</div>
+  </div>
   <div class="container">
     <?php if (isset($report)): ?>
       <h1>Report Details</h1>
@@ -96,7 +139,10 @@ if ($reportID) {
       <p class="error"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
   </div>
+  <div class="footer">© <span id="year"></span> Health Screening System | All rights reserved</div>
 
-<?php include('includes/footer.php'); ?>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </body>
 </html>

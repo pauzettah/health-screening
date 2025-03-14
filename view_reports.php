@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Include the database configuration
 include('includes/config.php');
 $hide_home = true;
@@ -113,7 +114,11 @@ $result = $conn->query($sql);
 
   </div>
 
-  <div class="footer">© 2025 Health Screening System | All rights reserved
-  </div>
+  <div class="footer">© <span id="year"></span> Health Screening System | All rights reserved</div>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
 </body>
 </html>

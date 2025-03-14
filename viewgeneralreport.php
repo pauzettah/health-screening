@@ -10,19 +10,7 @@ if (isset($_GET['search'])) {
     $searchTerm = mysqli_real_escape_string($conn, $_GET['search']);
 }
 
-// Query to fetch beneficiaries who didn't attend screening with search functionality
-$sql = "SELECT * FROM personal_info WHERE Date_of_Screening IS NULL";
-
-// If a search term is provided, add it to the query
-if (!empty($searchTerm)) {
-    $sql .= " AND (FName LIKE '%$searchTerm%' OR LName LIKE '%$searchTerm%' OR Local_BeneficiaryID LIKE '%$searchTerm%')";
-}
-
-$result = $conn->query($sql);
-
-// Check if the query returned any results
-$beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_ASSOC) : [];
-// Fetch Beneficiary Data
+// Query to fetch beneficiaries with search functionality
 $sql = "SELECT 
             countrycode, 
             branchcode, 
@@ -43,7 +31,15 @@ $sql = "SELECT
             blood_pressure, 
             immunization_given 
         FROM personal_info";
+
+// If a search term is provided, add it to the query
+if (!empty($searchTerm)) {
+    $sql .= " WHERE FName LIKE '%$searchTerm%' OR LName LIKE '%$searchTerm%' OR Local_BeneficiaryID LIKE '%$searchTerm%'";
+}
+
 $result = $conn->query($sql);
+
+// Check if the query returned any results
 $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_ASSOC) : [];
 ?>
 
@@ -131,6 +127,21 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       padding: 8px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      margin-right: 10px;
+    }
+
+    .header .search-btn {
+      padding: 8px 16px;
+      border: none;
+      background-color: #3a87ad;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .header .search-btn:hover {
+      background-color: #2f3b52;
     }
 
     .header .user-profile {
@@ -185,8 +196,9 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
     .table td {
       border-top: 1px solid #ddd;
     }
-     /* Back Button */
-     .back-btn {
+
+    /* Back Button */
+    .back-btn {
       padding: 8px 16px;
       background-color: #2f3b52;
       color: white;
@@ -258,7 +270,7 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
     <div class="main-content">
       <!-- Header -->
       <div class="header">
-      <form method="GET" style="display: flex; align-items: center;">
+        <form method="GET" style="display: flex; align-items: center;">
           <input type="text" name="search" class="search-bar" placeholder="Search..." value="<?= htmlspecialchars($searchTerm) ?>">
           <button type="submit" class="search-btn">Search</button>
         </form>

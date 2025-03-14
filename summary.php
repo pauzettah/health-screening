@@ -1,8 +1,6 @@
 <?php
 // Include database connection
 include('includes/config.php');
-$hide_home = true;
-include("includes/header.php");
 
 // Fetch summary data
 $totalBeneficiaries = $conn->query("SELECT COUNT(*) AS total FROM personal_info")->fetch_assoc()['total'];
@@ -28,24 +26,60 @@ $attendanceRate = $attended > 0 ? round(($attended / $totalBeneficiaries) * 100,
       background-color: #f8f9fa;
       margin: 0;
       padding: 0;
+      height: 100%;
+      overflow: hidden; /* Prevent body from scrolling */
     }
 
-    /* Ensure content is scrollable */
+    .header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 100px; /* Adjust the height as needed */
+      background-color: #3a87ad;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 1000;
+    }
+
+    .header img {
+      height: 50px; /* Adjust the height of the logo */
+      margin-right: 10px;
+    }
+
+    .header .title {
+      font-size: 20px; /* Adjust the font size as needed */
+    }
+
     .content {
-      margin-top: 60px; /* Adjust according to header height */
+      margin-top: 50px; /* Adjust according to header height */
       margin-bottom: 50px; /* Adjust according to footer height */
       overflow-y: auto;
-      height: calc(100vh - 110px); /* Adjust based on header and footer */
+      height: calc(100vh - 100px); /* Adjust based on header and footer */
       padding: 20px;
     }
 
     .container {
       max-width: 1200px;
-      margin: 0 auto;
+      margin: 80px auto 50px auto; /* Adjusted margins for header and footer */
       background: white;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .footer {
+      text-align: center;
+      background-color: #3a87ad;
+      color: white;
+      padding: 0;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      margin-bottom: 0;
+      height: 50px; /* Adjust the height as needed */
+      line-height: 50px; /* Vertically center the text */
     }
 
     h1 {
@@ -121,6 +155,10 @@ $attendanceRate = $attended > 0 ? round(($attended / $totalBeneficiaries) * 100,
   </style>
 </head>
 <body>
+  <div class="header">
+    <img src="images/logo.png" alt="Logo">
+    <div class="title">Project Summary</div>
+  </div>
 
   <div class="content">
     <div class="container">
@@ -165,6 +203,8 @@ $attendanceRate = $attended > 0 ? round(($attended / $totalBeneficiaries) * 100,
     </div>
   </div>
 
+  <div class="footer">© <span id="year"></span> Health Screening System | All rights reserved</div>
+
   <script>
     const attendanceData = {
       labels: ['Attended', 'Not Attended'],
@@ -183,9 +223,8 @@ $attendanceRate = $attended > 0 ? round(($attended / $totalBeneficiaries) * 100,
       datasets: [{ data: [<?= $attended ?>, <?= $notAttended ?>, <?= $sickBeneficiaries ?>], backgroundColor: ['#3498db', '#e74c3c', '#f39c12'] }]
     };
     new Chart(document.getElementById('generalChart').getContext('2d'), { type: 'pie', data: generalData });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
-
-  <?php include('includes/footer.php'); ?>
-
 </body>
 </html>
