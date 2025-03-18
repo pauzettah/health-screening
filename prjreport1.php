@@ -10,11 +10,13 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
+      height: 100%;
+      overflow: hidden; /* Prevent body from scrolling */
     }
 
     .container {
       display: flex;
-      min-height: 100vh;
+      height: 100vh;
     }
 
     /* Sidebar Styles */
@@ -56,6 +58,9 @@
       flex-grow: 1;
       background-color: #f4f7fa;
       padding: 20px;
+      overflow-y: auto;
+      margin-top: 60px; /* Adjust for fixed header */
+      margin-bottom: 50px; /* Adjust for fixed footer */
     }
 
     /* Header */
@@ -144,13 +149,13 @@
     /* Footer */
     .footer {
       text-align: center;
-      background-color: #2f3b52;
+      background-color: #3a87ad;
       color: white;
       padding: 10px 0;
+      width: calc(100% - 250px); /* Adjust for sidebar width */
       position: fixed;
-      width: 100%;
       bottom: 0;
-      left: 0;
+      left: 250px; /* Adjust for sidebar width */
     }
   </style>
 </head>
@@ -161,11 +166,11 @@
       <div class="logo">
         <img src="images/logo.png" alt="Logo">
       </div>
-           <a href="doctordash.php">Dashboard</a>
-           <a href="managebnr.php">Manage Beneficiaries</a>
-           <a href="viewgeneralreport1.php">General Report</a>
+      <a href="doctordash.php">Dashboard</a>
+      <a href="managebnr.php">Manage Beneficiaries</a>
+      <a href="viewgeneralreport1.php">General Report</a>
       <hr>
-           <a href="dashboard.php">Back to beneficiaries filling</a>
+      <a href="dashboard.php">Back to beneficiaries filling</a>
       <hr>
       <a href="index.php">Logout</a>
     </div>
@@ -200,8 +205,8 @@
         <div class="section">
           <h2>Edit</h2>
           <div class="card">
-            <h3>Edit  report</h3>
-            <p>Edit the report of a beneficiary if neccessary.</p>
+            <h3>Edit report</h3>
+            <p>Edit the report of a beneficiary if necessary.</p>
             <button onclick="location.href='edit.php'">Edit Report</button>
           </div>
         </div>
@@ -211,7 +216,11 @@
 
   <!-- Footer -->
   <div class="footer">
-    <?php include("includes/footer.php"); ?>
+    &copy; <span id="year"></span> Healthy Project. All rights reserved.
   </div>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </body>
 </html>

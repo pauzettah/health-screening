@@ -2,7 +2,15 @@
 // Include the database connection (config.php)
 include('includes/config.php');
 
-// Fetch Beneficiary Data
+// Initialize search term
+$searchTerm = "";
+
+// Check if a search term is provided and sanitize it
+if (isset($_GET['search'])) {
+    $searchTerm = mysqli_real_escape_string($conn, $_GET['search']);
+}
+
+// Query to fetch beneficiaries with search functionality
 $sql = "SELECT 
             countrycode, 
             branchcode, 
@@ -23,7 +31,15 @@ $sql = "SELECT
             blood_pressure, 
             immunization_given 
         FROM personal_info";
+
+// If a search term is provided, add it to the query
+if (!empty($searchTerm)) {
+    $sql .= " WHERE FName LIKE '%$searchTerm%' OR LName LIKE '%$searchTerm%' OR Local_BeneficiaryID LIKE '%$searchTerm%'";
+}
+
 $result = $conn->query($sql);
+
+// Check if the query returned any results
 $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_ASSOC) : [];
 ?>
 
@@ -39,11 +55,13 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
+      height: 100%;
+      overflow: hidden; /* Prevent body from scrolling */
     }
 
     .container {
       display: flex;
-      min-height: 100vh;
+      height: 100vh;
     }
 
     /* Sidebar styles */
@@ -84,6 +102,9 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       flex-grow: 1;
       background-color: #f4f7fa;
       padding: 20px;
+      overflow-y: auto;
+      margin-top: 60px; /* Adjust for fixed header */
+      margin-bottom: 50px; /* Adjust for fixed footer */
     }
 
     /* Header styles */
@@ -106,6 +127,21 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       padding: 8px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      margin-right: 10px;
+    }
+
+    .header .search-btn {
+      padding: 8px 16px;
+      border: none;
+      background-color: #3a87ad;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .header .search-btn:hover {
+      background-color: #2f3b52;
     }
 
     .header .user-profile {
@@ -161,6 +197,17 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       border-top: 1px solid #ddd;
     }
 
+    /* Back Button */
+    .back-btn {
+      padding: 8px 16px;
+      background-color: #2f3b52;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
     /* Print button styles */
     .print-btn {
       margin-top: 20px;
@@ -174,6 +221,18 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
 
     .print-btn:hover {
       background-color: #45a049;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      background-color: #3a87ad;
+      color: white;
+      padding: 10px 0;
+      width: calc(100% - 250px); /* Adjust for sidebar width */
+      position: fixed;
+      bottom: 0;
+      left: 250px; /* Adjust for sidebar width */
     }
   </style>
 
@@ -196,11 +255,11 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       <div class="logo">
         <img src="images/logo.png" alt="Logo">
       </div>
-            <a href="doctordash.php">Dashboard</a>
-            <a href="managebnr.php">Manage Beneficiaries</a>
-            <a href="prjreport1.php">Reports</a>
+      <a href="doctordash.php">Dashboard</a>
+      <a href="managebnr.php">Manage Beneficiaries</a>
+      <a href="viewgeneralreport1.php">General Report</a>
       <hr>
-            <a href="dashboard.php">Back to beneficiaries filling</a>
+      <a href="dashboard.php">Back to beneficiaries filling</a>
       <hr>
       <a href="index.php">Logout</a>
     </div>
@@ -209,7 +268,10 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
     <div class="main-content">
       <!-- Header -->
       <div class="header">
-        <input type="text" class="search-bar" placeholder="Search...">
+        <form method="GET" style="display: flex; align-items: center;">
+          <input type="text" name="search" class="search-bar" placeholder="Search..." value="<?= htmlspecialchars($searchTerm) ?>">
+          <button type="submit" class="search-btn">Search</button>
+        </form>
         <div class="user-profile">
           <img src="images/admin.png" alt="User Profile">
         </div>
@@ -218,6 +280,9 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       <!-- Beneficiaries Section -->
       <div class="section" id="report-section">
         <h2>General Report</h2>
+        <?php if (!empty($searchTerm)): ?>
+          <a href="viewgeneralreport1.php"><button class="back-btn">Back to Full List</button></a>
+        <?php endif; ?>
         <table class="table">
           <thead>
             <tr>
@@ -274,8 +339,12 @@ $beneficiaries = $result && $result->num_rows > 0 ? $result->fetch_all(MYSQLI_AS
       <!-- Print Button -->
       <button class="print-btn" onclick="printSection('report-section')">Print Report</button>
     </div>
-      <?php 
-      include("includes/footer.php"); 
-      ?>
-  </body>
-  </html>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    &copy; 2025 Healthy Project. All rights reserved.
+  </div>
+
+</body>
+</html>
