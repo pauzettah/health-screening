@@ -32,10 +32,12 @@ include("includes/config.php");
             padding: 20px 0;
             position: fixed;
             top: 0;
-            left:0;
+            left: 0;
             width: 100%;
             z-index: 1000;
-            margin-top: 0px;
+            height: 80px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 0;
         }
 
         header .container {
@@ -47,6 +49,7 @@ include("includes/config.php");
 
         header .logo img {
             margin-right: 10px;
+            margin-top: -10px;
         }
 
         header .logo h1 {
@@ -58,6 +61,7 @@ include("includes/config.php");
             list-style-type: none;
             padding: 0;
             margin: 0;
+            margin-top: -40px;
         }
 
         header nav ul li {
@@ -69,22 +73,41 @@ include("includes/config.php");
             color: #fff;
             text-decoration: none;
             font-weight: bold;
+          
         }
 
         header nav ul li a:hover {
             text-decoration: underline;
         }
-     
-        footer {
-            background-color: #3a87ad;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-            width: 100%;
-            bottom: 0;
-            position: fixed; 
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 70px; /* Add padding equal to header height */
         }
-                footer .footer-content {
+
+        .container {
+            flex: 1; /* Pushes the footer to the bottom */
+        }
+
+        .footer {
+            text-align: center;
+            background-color: #3a87ad;
+            color: white;
+            padding: 0;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            margin-bottom: 0;
+            height: auto;
+            line-height: 60px; /* Vertically center the text */
+        }
+
+        footer .footer-content {
             display: flex;
             justify-content: center;
             flex-direction: column;
@@ -104,24 +127,23 @@ include("includes/config.php");
         footer .footer-content a:hover {
             text-decoration: underline;
         }
-    </style>
-</head>
-<body>
-    <!-- Header Section -->
-    <header>
+        </style>
+    </head>
+    <body>
+        <!-- Header Section -->
+        <header>
         <div class="container">
             <div class="logo">
-                <img src="images/logo.png" alt="Health Screening System Logo" height="50">
-                <h1>Health Screening System</h1>
+            <img src="images/logo.png" alt="Health Screening System Logo" height="50">
+            <h1>Health Screening System</h1>
             </div>
             <nav>
-                <ul>
-                    <li><a href="dashboard.php">Home</a></li>
-                    
-                </ul>
+            <ul>
+                <li><a href="dashboard.php">Home</a></li>
+            </ul>
             </nav>
         </div>
-    </header>
+        </header></ul></nav></div></header>
 
     <!-- Form Section -->
     <form action="formoneprocessdata.php" method="post">
@@ -406,11 +428,9 @@ include("includes/config.php");
         });
     </script>
 
-    <!-- Footer Section -->
-   <?php
-
-   include("includes/footer.php");
-
-   ?>
+<div class="footer">© <span id="year"></span> Health Screening System | All rights reserved</div>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </body>
 </html>

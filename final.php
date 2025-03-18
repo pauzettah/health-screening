@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color:rgb(21, 159, 30);
+            background-color: rgb(21, 159, 30);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -48,9 +48,11 @@
         <p>Thank you for acknowledging the information. Your submission has been processed successfully.</p>
     </div>
     <script>
-                setTimeout(function() {
-                    window.location.href = "dashboard.php"; // Redirect to the next form
-                }, 2000); // Redirect after 2 seconds
-            </script>';
+        // Redirect to dashboard.php after 2 seconds
+        setTimeout(function() {
+            console.log("Redirecting to dashboard.php...");
+            window.location.href = "dashboard.php";
+        }, 2000); // Redirect after 2 seconds
+    </script>
 </body>
 </html>

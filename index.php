@@ -1,7 +1,4 @@
-<?php
-$hide_home = true;
-include("includes/header.php");
-?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,16 +13,24 @@ include("includes/header.php");
             font-family: 'Arial', sans-serif;
             background-color: #f4f6f9;
             color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Header */
         .header {
-            background-color: #fff;
+            background-color: #3a87ad;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
         }
 
         .header img {
@@ -44,10 +49,30 @@ include("includes/header.php");
             color: #007bff;
         }
 
+        /* Footer */
+        .footer {
+            background-color: #3a87ad;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px 30px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 14px;
+            color: black;
+        }
+
         /* Main Section */
         .main {
             text-align: center;
-            padding: 50px 20px;
+            padding: 100px 20px 80px; /* Adjust padding to account for fixed header and footer */
+            flex: 1; /* Pushes footer to the bottom */
         }
 
         .main h1 {
@@ -155,6 +180,11 @@ include("includes/header.php");
 </head>
 <body>
 
+    <!-- Header Section -->
+    <header class="header">
+        <img src="images/logo.png" alt="Health Screening Logo">
+    </header>
+
     <!-- Main Section -->
     <main class="main">
         <h1>Welcome to the Health Screening Portal</h1>
@@ -178,6 +208,11 @@ include("includes/header.php");
         </div>
     </main>
 
+    <!-- Footer Section -->
+    <footer class="footer">
+        <p>© 2025 Health Screening System. All rights reserved.</p>
+    </footer>
+
     <script>
         function toggleDropdown() {
             document.querySelector(".dropdown").classList.toggle("active");
@@ -191,8 +226,6 @@ include("includes/header.php");
             }
         });
     </script>
-
-    <?php include("includes/footer.php"); ?>
 
 </body>
 </html>

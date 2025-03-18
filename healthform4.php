@@ -1,5 +1,4 @@
 <?php
-include("includes/header.php");
 include("includes/config.php");
 
 // Fetch IDs from the database
@@ -17,51 +16,87 @@ $result = $conn->query($sql);
     <title>Health Screening Form</title>
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            background-color: #f4f7fa;
         }
+
         header {
             background-color: #3a87ad; /* Blue background */
             color: #fff;
-            padding: 0px 0; /* Reduce padding */
+            padding: 15px 20px;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 15vh; /* Reduce height */
             z-index: 1000;
-            margin-top: 0;
-            align-items: center; /* Align content vertically */
-            justify-content: center; /* Center content */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            height: 80px;
+        }
+
+        header .logo {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+
+        header .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        header .logo h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        header nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        header nav ul li {
+            display: inline;
+        }
+
+        header nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 90px;
+        }
+
+        header nav ul li a:hover {
+            text-decoration: underline;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 1em;
-          
+            padding: 2em;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 70px; /* Add margin to prevent content from being covered by the header */
+            margin-bottom: 60px; /* Add margin to prevent content from being covered by the footer */
         }
 
         .form {
-            background: #f9f9f9;
             padding: 2em;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-           
         }
 
-        .heading h3 {
+        .heading h3, .heading h4 {
             text-align: center;
             margin-bottom: 1.5em;
-            font-size: 1.5rem;
-        }
-        .heading h4 {
-            text-align: center;
-            margin-bottom: 0;
-            margin-bottom: 0.1em;
-            font-size: 1.8rem;
+            color: #3a87ad;
         }
 
         label {
@@ -81,19 +116,14 @@ $result = $conn->query($sql);
             font-size: 1rem;
         }
 
-        .credentials {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1em;
-        }
-
         .signature-section {
             margin-top: 1em;
         }
 
         .signature-pad {
             border: 2px solid #000;
-            width: 300px;
+            width: 100%;
+            max-width: 300px;
             height: 150px;
             border-radius: 5px;
             cursor: crosshair;
@@ -122,9 +152,39 @@ $result = $conn->query($sql);
         .previous, .next {
             margin: 1em 0;
         }
+
+        footer {
+            background-color: #3a87ad;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        footer span {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">
+            <img src="images/logo.png" alt="Health Screening System Logo">
+            <h1>Health Screening System</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.php">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Form Section -->
     <form action="formfourprocessdata.php" method="POST">
         <div class="container">
             <div class="form">
@@ -203,7 +263,8 @@ $result = $conn->query($sql);
                     <button type="button" onclick="clearSignature()">Clear</button>
                     <button type="button" onclick="saveSignature()">Save</button>
                 </div>
-                <textarea id="signature" name="signature" rows="4" readonly placeholder="Draw your signature above"></textarea>
+                <!-- Hidden input to store the Base64-encoded signature -->
+                <input type="hidden" id="signature" name="signature">
             </div>
             <div>
                 <a href="healthform3.php"><button type="button" class="previous">Previous</button></a>
@@ -212,78 +273,50 @@ $result = $conn->query($sql);
         </div>
     </form>
 
+    <footer>
+        © <span id="year"></span> Health Screening System | All rights reserved
+    </footer>
     <script>
-         // Get today's date in YYYY-MM-DD format
-        const today = new Date().toISOString().split('T')[0];
-
-        // Set the max attribute on the input field
-        document.getElementById('date').setAttribute('max', today);
-        const canvas = document.getElementById('signature-pad');
-        const ctx = canvas.getContext('2d');
-        let isDrawing = false;
-
-        function getEventPosition(event) {
-
-            if (event.touches && event.touches[0]) {
-                return { x: event.touches[0].clientX - canvas.getBoundingClientRect().left, 
-                         y: event.touches[0].clientY - canvas.getBoundingClientRect().top };
-            } else {
-                return { x: event.offsetX, y: event.offsetY };
-            }
-        }
-
-        function startDrawing(event) {
-            isDrawing = true;
-            const pos = getEventPosition(event);
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
-        }
-
-        function draw(event) {
-            if (!isDrawing) return;
-            const pos = getEventPosition(event);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-        }
-
-        function stopDrawing() {
-            isDrawing = false;
-            ctx.closePath();
-        }
-
-        function clearSignature() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        function saveSignature() {
-            const dataURL = canvas.toDataURL();
-            document.getElementById('signature').value = dataURL; // Ensure the input is updated
-            console.log("Captured Base64 Signature:", dataURL); // Debugging output
-            alert("Signature saved!");
-        }
-
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mouseout', stopDrawing);
-
-        canvas.addEventListener('touchstart', (event) => {
-            event.preventDefault();
-            startDrawing(event);
-        });
-        canvas.addEventListener('touchmove', (event) => {
-            event.preventDefault();
-            draw(event);
-        });
-        canvas.addEventListener('touchend', (event) => {
-            event.preventDefault();
-            stopDrawing(event);
-        });
+        document.getElementById("year").textContent = new Date().getFullYear();
     </script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script>
+    // Initialize the signature pad
+    const canvas = document.getElementById('signature-pad');
+    const signaturePad = new SignaturePad(canvas);
+
+    // Clear the signature pad
+    function clearSignature() {
+        signaturePad.clear();
+        document.getElementById('signature').value = ''; // Clear the hidden input
+    }
+
+    // Save the signature as a Base64 string
+    function saveSignature() {
+        if (signaturePad.isEmpty()) {
+            alert('Please provide a signature first.');
+        } else {
+            const dataURL = signaturePad.toDataURL(); // Get the signature as a Base64 string
+            document.getElementById('signature').value = dataURL; // Save it to the hidden input
+            alert('Signature saved successfully!');
+        }
+    }
+
+    // Resize the canvas to fit its container
+    function resizeCanvas() {
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        canvas.getContext('2d').scale(ratio, ratio);
+        signaturePad.clear(); // Clear the canvas after resizing
+    }
+
+    // Adjust the canvas size on window resize
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas(); // Initial resize
+</script>
 
 <?php
 $conn->close();
-include("includes/footer.php");
 ?>
 </html>

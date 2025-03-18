@@ -48,12 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die("Signature is required.");
     }
 
+    // Validate the signature format (Base64-encoded image)
     if (!str_starts_with($signature, "data:image/")) {
         die("Invalid signature format.");
-    }
-
-    if (empty($health_status)) {
-        die("Health status is required.");
     }
 
     // SQL Query for inserting data

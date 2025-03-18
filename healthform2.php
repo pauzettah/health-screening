@@ -1,5 +1,5 @@
 <?php
-include("includes/header.php");
+include("includes/config.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,17 +25,59 @@ include("includes/header.php");
             margin: 0 auto;
             padding: 20px;
         }
+       
         header {
             background-color: #3a87ad; /* Blue background */
             color: #fff;
             padding: 20px 0;
             position: fixed;
             top: 0;
-            left:0;
+            left: 0;
             width: 100%;
-            height: 20vh;
             z-index: 1000;
-            margin-top: 0px;
+            height: 80px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 0;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        header .logo img {
+            margin-right: 10px;
+            margin-top: -10px;
+        }
+
+        header .logo h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            margin-top: -40px;
+        }
+
+        header nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        header nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+          
+        }
+
+        header nav ul li a:hover {
+            text-decoration: underline;
         }
 
         .form {
@@ -78,6 +120,39 @@ include("includes/header.php");
 
         textarea {
             resize: vertical;
+        }
+        .footer {
+            text-align: center;
+            background-color: #3a87ad;
+            color: white;
+            padding: 0;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            margin-bottom: 0;
+            height: auto;
+            line-height: 60px; /* Vertically center the text */
+        }
+
+        footer .footer-content {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer .footer-content p {
+            margin: 5px;
+        }
+
+        footer .footer-content a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer .footer-content a:hover {
+            text-decoration: underline;
         }
 
         .d-left, .middle, .d-right {
@@ -150,8 +225,21 @@ include("includes/header.php");
             }
         }
     </style>
-</head>
-<body>
+   </head>
+    <body>
+        <!-- Header Section -->
+        <header>
+        <div class="container">
+            <div class="logo">
+            <img src="images/logo.png" alt="Health Screening System Logo" height="50">
+            </div>
+            <nav>
+            <ul>
+                <li><a href="dashboard.php">Home</a></li>
+            </ul>
+            </nav>
+        </div>
+        </header></ul></nav></div></header>
 <form action="formtwoprocessdata.php" method="post">
     <div class="container">
         <div class="form">
@@ -251,12 +339,11 @@ include("includes/header.php");
         </div>
     </div>
 </form>
-<?php
-include("includes/footer.php");
-?>
 
+<div class="footer">© <span id="year"></span> Health Screening System | All rights reserved</div>
 <script>
     // Prevent future dates selection for Vitamin A and Deworming fields
+    document.getElementById("year").textContent = new Date().getFullYear();
     document.addEventListener("DOMContentLoaded", function() {
         var today = new Date().toISOString().split("T")[0];
         document.getElementById("vitaminA").setAttribute("max", today);
