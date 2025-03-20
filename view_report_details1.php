@@ -1,12 +1,25 @@
 <?php
 // Include necessary files
 include('includes/config.php');
+
 // Get the ReportID from the URL
 $reportID = isset($_GET['ReportID']) ? mysqli_real_escape_string($conn, $_GET['ReportID']) : null;
 
-// Fetch the report details
+// Fetch the report details along with additional fields
 if ($reportID) {
-    $sql = "SELECT ReportID, BeneficiaryID, FullName, ReportDetails, CreatedAt FROM reports WHERE ReportID = '$reportID'";
+    $sql = "SELECT 
+                r.ReportID, 
+                r.BeneficiaryID, 
+                r.FullName, 
+                r.ReportDetails, 
+                r.CreatedAt, 
+                p.Gender, 
+                p.Weight, 
+                p.Height, 
+                p.BMI 
+            FROM reports r 
+            LEFT JOIN personal_info p ON r.BeneficiaryID = p.Local_BeneficiaryID 
+            WHERE r.ReportID = '$reportID'";
     $result = $conn->query($sql);
 
     if ($result && $result->num_rows > 0) {
@@ -132,6 +145,10 @@ if ($reportID) {
       <p><strong>Report ID:</strong> <?= htmlspecialchars($report['ReportID']) ?></p>
       <p><strong>Beneficiary ID:</strong> <?= htmlspecialchars($report['BeneficiaryID']) ?></p>
       <p><strong>Full Name:</strong> <?= htmlspecialchars($report['FullName']) ?></p>
+      <p><strong>Gender:</strong> <?= htmlspecialchars($report['Gender']) ?></p>
+      <p><strong>Weight:</strong> <?= htmlspecialchars($report['Weight']) ?> kg</p>
+      <p><strong>Height:</strong> <?= htmlspecialchars($report['Height']) ?> cm</p>
+      <p><strong>BMI:</strong> <?= htmlspecialchars($report['BMI']) ?></p>
       <p><strong>Report Details:</strong> <?= nl2br(htmlspecialchars($report['ReportDetails'])) ?></p>
       <p><strong>Date Created:</strong> <?= htmlspecialchars($report['CreatedAt']) ?></p>
       <a href="view_reports1.php" class="back-button">Back to Reports</a>

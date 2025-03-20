@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Director Dashboard</title>
-   
+ 
 <?php
-// Include database connection
+// Include database connectiona
 include("includes/config.php");
 
 // Query to get the total number of beneficiaries
@@ -27,6 +21,12 @@ $resultFailed = mysqli_query($conn, $queryFailed);
 $rowFailed = mysqli_fetch_assoc($resultFailed);
 $failedBeneficiaries = $rowFailed['failed'];
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Director Dashboard</title>
 
   <style>
     /* Global Styles */

@@ -4,18 +4,55 @@ session_start();
 include('includes/config.php');
 $hide_home = true;
 
-// Modify the Home link to point to projectdirectordash.php instead of index
-echo '<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    if (homeLink) {
-      homeLink.setAttribute("href", "doctordash.php");
-    }
-  });
-</script>';
-
-// Fetch reports from the database
-$sql = "SELECT ReportID, BeneficiaryID, FullName, ReportDetails, CreatedAt FROM reports ORDER BY CreatedAt DESC";
+// Fetch reports and additional data from the database
+$sql = "SELECT 
+            r.ReportID, 
+            r.BeneficiaryID, 
+            r.FullName, 
+            r.ReportDetails, 
+            r.CreatedAt, 
+            p.Gender, 
+            p.Weight, 
+            p.Height, 
+            p.BMI 
+        FROM reports r 
+        LEFT JOIN personal_info p ON r.BeneficiaryID = p.Local_BeneficiaryID 
+        ORDER BY r.CreatedAt DESC";
 $result = $conn->query($sql);
+
+// Export to CSV functionality
+if (isset($_GET['export'])) {
+    // Set headers for CSV download
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment;filename="reports.csv"');
+
+    // Open output stream
+    $output = fopen('php://output', 'w');
+
+    // Write the column headers
+    fputcsv($output, ['Report ID', 'Beneficiary ID', 'Full Name', 'Gender', 'Weight', 'Height', 'BMI', 'Report Details', 'Date Created']);
+
+    // Write the data rows
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            fputcsv($output, [
+                $row['ReportID'],
+                $row['BeneficiaryID'],
+                $row['FullName'],
+                $row['Gender'],
+                $row['Weight'],
+                $row['Height'],
+                $row['BMI'],
+                $row['ReportDetails'],
+                $row['CreatedAt']
+            ]);
+        }
+    }
+
+    // Close the output stream
+    fclose($output);
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -45,14 +82,17 @@ $result = $conn->query($sql);
     max-height: calc(100vh - 160px); /* Adjust height to fit between header and footer */
   }
 
-  .header{
+  table tbody tr td {
+    color: black; /* Set table data text color to black */
+  }
+
+  .header {
     position: fixed;
     left: 0;
     top: 0;
     width: 100%;
     background-color: #3a87ad;
     color: white;
-    text-align: center;
     text-align: center;
     height: 45px;
   }
@@ -70,7 +110,7 @@ $result = $conn->query($sql);
     line-height: 60px; /* Vertically center the text */
   }
 </style>
-<body style="font-family: Arial, sans-serif; background-color: #f4f7fa; margin: 0; padding: 20px;">
+<body>
 <div class="header">  <?php include("includes/header.php"); ?>
 
   <div class="view-reports">
@@ -84,6 +124,10 @@ $result = $conn->query($sql);
             <th style="padding: 12px; border: 1px solid #ddd;">Report ID</th>
             <th style="padding: 12px; border: 1px solid #ddd;">Beneficiary ID</th>
             <th style="padding: 12px; border: 1px solid #ddd;">Full Name</th>
+            <th style="padding: 12px; border: 1px solid #ddd;">Gender</th>
+            <th style="padding: 12px; border: 1px solid #ddd;">Weight</th>
+            <th style="padding: 12px; border: 1px solid #ddd;">Height</th>
+            <th style="padding: 12px; border: 1px solid #ddd;">BMI</th>
             <th style="padding: 12px; border: 1px solid #ddd;">Report Details</th>
             <th style="padding: 12px; border: 1px solid #ddd;">Date Created</th>
             <th style="padding: 12px; border: 1px solid #ddd;">Action</th>
@@ -91,10 +135,14 @@ $result = $conn->query($sql);
         </thead>
         <tbody>
           <?php while ($row = $result->fetch_assoc()): ?>
-            <tr style="background-color: #f9f9f9; border-bottom: 1px solid #ddd; text-align: center;">
+            <tr style="background-color: #e6f7ff; border-bottom: 1px solid #ddd; text-align: center;">
               <td style="padding: 10px;"> <?= htmlspecialchars($row['ReportID']) ?> </td>
               <td style="padding: 10px;"> <?= htmlspecialchars($row['BeneficiaryID']) ?> </td>
               <td style="padding: 10px;"> <?= htmlspecialchars($row['FullName']) ?> </td>
+              <td style="padding: 10px;"> <?= htmlspecialchars($row['Gender']) ?> </td>
+              <td style="padding: 10px;"> <?= htmlspecialchars($row['Weight']) ?> </td>
+              <td style="padding: 10px;"> <?= htmlspecialchars($row['Height']) ?> </td>
+              <td style="padding: 10px;"> <?= htmlspecialchars($row['BMI']) ?> </td>
               <td style="padding: 10px;"> <?= htmlspecialchars(substr($row['ReportDetails'], 0, 50)) ?>... </td>
               <td style="padding: 10px;"> <?= htmlspecialchars($row['CreatedAt']) ?> </td>
               <td style="padding: 10px;">
@@ -109,8 +157,9 @@ $result = $conn->query($sql);
     <?php endif; ?>
     
     <div style="text-align: center; margin-top: 20px;">
-  <button onclick="window.location.href='prjreport1.php';" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Back</button>
-</div>
+      <button onclick="window.location.href='prjreport1.php';" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Back</button>
+      <button onclick="window.location.href='view_reports1.php?export=true';" style="background:#4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Export to CSV</button>
+    </div>
 
   </div>
 
